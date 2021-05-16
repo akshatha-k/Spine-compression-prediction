@@ -1,0 +1,13 @@
+patient_id,Age,Gender,Race,Height (in),Height (cm),Weight (lbs),Weight (kg),BMI,primary cause of death,secondary cause of death,further diagnosis,smoking,date of death,Group
+L191953,53,m,White,77,195.58,207,93.89,24.55,cardiorespiratory arrest, metastasis to liver,"malignant neoplasm of esophagus, copd",60,09/17/2019,Deco
+S192868,65,m,White,68,172.72,220,99.79,33.45,"cardiopulmonary arrest, ischemic stroke",hypertensive disease,na,na,4/10/2019,Deco
+S200397,52,f,White,66,167.64,231,104.78,37.28,cardiogenic shock,na,"heart disease, copd",15,5/2/2020,Deco
+L190127,66,m,White,69,175.26,180,81.65,26.58,"cardiopulmonary arrest, coronary artery disease",Dm type I,na,20,01/23/2019,Deco
+S200092,60,f,White,62,157.48,172,78.02,31.46,heart disease,diabetes,"breast cancer with chemo 0-6 mo prior, DM typ I, Stroke 7-12 mo prior",na,9/1/2020,Deco
+S193333,57,f,White,67,170.18,126,57.15,19.73,septic shock due to right thigh abscess,na,"rheumatoid arthritis, lupus, COPD",20,11/22/2019,Deco
+S191445,66,m,White,67,170.18,145,65.77,22.71,pending,na,stroke,30,05/13/2019,Deco
+S193211,59,m,White,71,180.34,237,107.5,33.05,cardiac arrest,atrial fibrillation,"diabetes, coronary disease, stroke 3 y prior",15,7/11/2019,Deco
+S200063,50,m,Other,71,180.34,210,95.25,29.29,pending,na,heart disease,10,6/1/2020,Deco
+S200463,57,f,White,66,167.64,100,45.36,16.14,"acute cardiac arrest, respiratory faiulre",na,na,na,11/2/2020,Deco
+S193688,56,m,White,71,180.34,190,86.18,26.5,hear disease,na,na,40,12/23/2019,Deco
+S183028,68,m,White,67,170.18,220,99.79,34.46,Atheroscelrotic aand hypertensive cardiovascular disease,Blunt force torso trauma,none,8,3/11/2018,Deco
