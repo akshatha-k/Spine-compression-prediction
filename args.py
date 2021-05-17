@@ -1,87 +1,53 @@
 import argparse
-import nestargs
+#import nestargs
 
 from datetime import datetime
 from pathlib import Path
 
-parser = nestargs.NestedArgumentParser(description="Surgery effect prediction")
+
+parser = argparse.ArgumentParser(description='Spine decompression')
 parser.add_argument(
-    "--model_name", default="random_forest", type=str, help="Model to use"
+    "--model_name", default="random_forest", type=str, help="Model to use", choices=['random_forest', 'linear_regression', 'gradient_boost', 'decision_tree']
 )
-parser.add_argument(
-    "--random_forest.n_estimators",
-    default=10,
-    type=int,
-    help="Number of estimators to use in Random Forest",
-)
-parser.add_argument(
-    "--random_forest.random_state",
-    default=42,
-    type=int,
-    help="Random seed",
-)
-parser.add_argument(
-    "--output_dir", default="saved_models", type=str, help="Output dir to use"
-)
+#Random Forest params
 # parser.add_argument(
-#     "--linear_regression.foo",
+#     "--rf_n_estimators",
 #     default=10,
 #     type=int,
 #     help="Number of estimators to use in Random Forest",
 # )
 # parser.add_argument(
-#     "--linear_regression.bar",
+#     "--rf_random_state",
 #     default=42,
 #     type=int,
 #     help="Random seed",
 # )
-
-# main_parser = argparse.ArgumentParser(description="Surgery effect prediction")
-# # Main Training Parameters
-# main_parser.add_argument(
-#     "--model_name", default="random_forest", type=str, help="Model to use"
-# )
-
-# # sub commands
-# subparsers = main_parser.add_subparsers(dest="model_params")
-
-# # Random Forest Params
-# random_forest_parser = subparsers.add_parser("random_forest")
-# random_forest_parser.add_argument(
-#     "--n_estimators",
+# #Gradient Boost params
+# parser.add_argument(
+#     "--gb_n_estimators",
 #     default=10,
 #     type=int,
-#     help="Number of estimators to use in Random Forest",
+#     help="Number of estimators to use in Gradient Boost",
 # )
-# random_forest_parser.add_argument(
-#     "--random_state",
-#     default=42,
-#     type=int,
-#     help="Random seed",
+# parser.add_argument(
+#     "--gb_learning_rate",
+#     default=0.1,
+#     type=float,
+#     help="Learning rate to use in Gradient Boost",
 # )
-# random_forest_parser.set_defaults(func="random_forest")
 
-# # Linear Regression params
-# linear_regression_parser = subparsers.add_parser("linear_regression")
-# linear_regression_parser.add_argument(
-#     "--boo",
-#     default=10,
-#     type=int,
-#     help="Number of estimators to use in Random Forest",
-# )
-# linear_regression_parser.add_argument(
-#     "--foo",
-#     default=42,
-#     type=int,
-#     help="Random seed",
-# )
-# linear_regression_parser.set_defaults(func="linear_regression")
+parser.add_argument(
+    "--dataset_path", default="data/final_data.csv", type=str, help="Dataset dir to use"
+)
+parser.add_argument(
+    "--post_preproc_data_path", default="data/no_categorical_data.csv", type=str, help="Dataset dir to use to store the dataset after preprocessing"
+)
 def setup_dir(args):
-    now = datetime.now()
-    date_time = now.strftime("%d_%m_%Y-%H_%M_%S")
-    directory = "saved_models/{}/{}".format(args.model_name, date_time)
-    Path(directory).mkdir(parents=True, exist_ok=True)
-    return directory
+    # now = datetime.now()
+    # directory = "models/{}/model".format(args.model_name)
+    # Path(directory).mkdir(parents=True, exist_ok=True)
+    # return directory
+    return "models"
 
 
 def get_args():
