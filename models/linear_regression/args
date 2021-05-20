@@ -1,5 +1,5 @@
 {
-    "model_name": "random_forest",
+    "model_name": "linear_regression",
     "dataset_path": "data/final_data.csv",
     "post_preproc_data_path": "data/no_categorical_data.csv",
     "output_dir": "models"

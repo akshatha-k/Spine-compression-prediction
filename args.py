@@ -9,6 +9,42 @@ parser = argparse.ArgumentParser(description='Spine decompression')
 parser.add_argument(
     "--model_name", default="random_forest", type=str, help="Model to use", choices=['random_forest', 'linear_regression', 'gradient_boost', 'decision_tree']
 )
+parser.add_argument(
+    "--Age",
+    default=10,
+    type=int,
+    help="Number of estimators to use in Random Forest",
+)
+parser.add_argument(
+    "--Heightcm",
+    default=15,
+    type=int,
+    help="Number of estimators to use in Random Forest",
+)
+parser.add_argument(
+    "--Weightkg",
+    default=15,
+    type=int,
+    help="Number of estimators to use in Random Forest",
+)
+parser.add_argument(
+    "--BMI",
+    default=15,
+    type=int,
+    help="Number of estimators to use in Random Forest",
+)
+parser.add_argument(
+    "--level",
+    default="L1L2",
+    type=str,
+    help="Number of estimators to use in Random Forest",
+)
+parser.add_argument(
+    "--Gender",
+    default="f",
+    type=str,
+    help="Number of estimators to use in Random Forest",
+)
 #Random Forest params
 # parser.add_argument(
 #     "--rf_n_estimators",

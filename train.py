@@ -15,10 +15,11 @@ from sklearn.metrics import (
     r2_score,
     accuracy_score,
 )
-from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-from feature_selection.Preprocessing import Preprocessing
+from feature_selection import Preprocessing
 
 args = get_args()
 
@@ -27,7 +28,7 @@ class Trainer:
     select and load model, train, metrics, test
     """
 
-    def __init__(self, args, features):
+    def __init__(self, args, features, scaler=None, preproc=None):
         self.args = args
         self.features = features
         self.registry = {
@@ -36,7 +37,12 @@ class Trainer:
             "gradient_boosting": GradientBoostingRegressor,
             "decision_tree": DecisionTreeRegressor,
         }
-        self.preproc = Preprocessing()
+        if preproc is None:
+            preproc= Preprocessing()
+        if scaler is None:
+            scaler = StandardScaler()
+        self.preproc = preproc
+        self.scaler= scaler
 
     def train(self, trainset, testset):
         try:
@@ -51,11 +57,10 @@ class Trainer:
 
     def predict(self, testset, inference=False):
         if inference:
-            
-            return self.model.predict(np.expand_dims(testset[0].iloc[0], axis=0))
-        y_pred = self.model.predict(testset[0])
-        return y_pred
-
+            return self.model.predict(testset)
+            #return self.model.predict(np.expand_dims(testset[0].iloc[0], axis=0))
+        return self.model.predict(testset[0])
+        
     def metrics(self, testset, y_pred):
         if self.args.model_name == "linear_regression":
             importance = self.model.coef_
@@ -79,7 +84,7 @@ class Trainer:
         return mse, mae, r2score
 
     def save(self):
-        state = {'model':self.model, 'preproc': self.preproc}
+        state = {'model':self.model, 'preproc': self.preproc, 'scaler': self.scaler}
         joblib.dump(state, "models/{}/model".format(self.args.model_name))
         dict_args = vars(self.args)
         json_txt = json.dumps(dict_args, indent=4)
@@ -90,6 +95,7 @@ class Trainer:
         state= joblib.load("models/{}/model".format(self.args.model_name))
         self.model = state['model']
         self.preproc = state['preproc']
+        self.scaler = state['scaler']
         with open("models/{}/args".format(self.args.model_name), "r") as file:
             self.args = json.load(file)
         try:
@@ -100,27 +106,30 @@ class Trainer:
             self.model_params = None       
 
 def load_dataset():
-    self.preproc.clean_dataset()
-    df = pd.read_csv(self.args.post_preproc_data_path)
-    df.drop(["Unnamed: 0", "Heightin", "Weightlbs", "patient_id"], axis=1, inplace=True)
+    #preproc.clean_dataset()
+    df = pd.read_csv(args.post_preproc_data_path)
+    df.drop("Unnamed: 0", axis=1, inplace=True)
     features = list(df.columns)[1:]
-    train, test = train_test_split(df, test_size=0.2)
+    train, test = train_test_split(df, test_size=0.2)    
     y_train = train["value"]
     x_train = train.drop(axis=1, columns=["value"])
+    scaler = StandardScaler().fit(x_train)
+    x_train= scaler.transform(x_train)
     y_test = test["value"]
     x_test = test.drop(axis=1, columns=["value"])
+    x_test= scaler.transform(x_test)
     trainset = (x_train, y_train)
     testset = (x_test, y_test)
-    return features, trainset, testset
-
+    return features, trainset, testset,scaler
 
 if __name__ == "__main__":
-    features, trainset, testset = load_dataset()
-    trainer = Trainer(args, features)
-    print(trainset[0].type.unique())
-    exit(0)
-    # trainer.train(trainset, testset)
-    # y_pred = trainer.predict(testset)
+    preproc = Preprocessing()
+    preproc.clean_dataset()
+    features, trainset, testset, scaler = load_dataset()
+    trainer = Trainer(args, features, scaler,preproc)
+    trainer.train(trainset, testset)
+    y_pred = trainer.predict(testset)
+    print(y_pred)
     # mse, mae, r2score = trainer.metrics(testset, y_pred)
     # # The mean squared error
     # print("Mean squared error: %.2f" % mse)
@@ -128,6 +137,6 @@ if __name__ == "__main__":
     # print("Mean absolute error: %.2f" % mae)
     # # The coefficient of determination: 1 is perfect prediction
     # print("Coefficient of determination: %.2f" % r2score)
-    # trainer.save()
-    trainer.load()
-    print(trainer.predict(testset, inference=True))
+    trainer.save()
+    
+   # print(trainer.predict(testset, inference=True))

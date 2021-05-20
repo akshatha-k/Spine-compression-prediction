@@ -10,44 +10,58 @@ warnings.filterwarnings("ignore")
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
 from args import get_args
 import statsmodels.api as sm
 
 np.random.seed(123)
 
 class Preprocessing:
-    def __init__():
-        self.label_encoder = LabelEncoder()
+    def __init__(self):
+        self.label_encoder = {}
         self.args = get_args()
+    
+    def get_unique_values(self):
+        df = pd.read_csv(self.args.dataset_path)
+        types= df.type.unique().tolist()
+        intervention= df.intervention.unique().tolist()
+        experiment = df.experiment.unique().tolist()
+        return [types, intervention, experiment]
 
-    def clean_dataset():
+    def clean_dataset(self):
         df = pd.read_csv(self.args.dataset_path)
         df['value'].replace('', np.nan, inplace=True)
         df = df[pd.notnull(df['value'])]
         df = df.reset_index(drop=True)
-        df.drop(axis=1, columns=['Race', 'primary cause of death', 'secondary cause of death', 'Height (in)', 'Weight (lbs)', 'further diagnosis', 'Group', 'date of death'], inplace=True)
-        df = df.drop(columns="Smoking")
+        df.drop(axis=1, columns=['Race','patient_id', 'primary cause of death', 'secondary cause of death', 'Height (in)', 'Weight (lbs)', 'further diagnosis', 'Group', 'date of death'], inplace=True)
+        df = df.drop(columns="smoking")
         df = df.rename(columns=lambda x: re.sub("[^A-Za-z0-9_]+", "", x))
-        df = df.apply(lambda x: x.str.strip().str.lower() if x.dtype == "object" else x)
-        new_df = df.loc[:, df.dtypes == object].apply(LabelEncoder().fit_transform)
-        df = df.drop(
-            columns=["patient_id", "level", "type", "experiment", "intervention", "Gender"]
-        )
-        result = pd.concat(
-            [df, new_df],
-            axis=1,
-            join="outer",
-            ignore_index=False,
-            keys=None,
-            levels=None,
-            names=None,
-            verify_integrity=False,
-            copy=True,
-        )
-        result.to_csv(self.args.post_preproc_data_path)
+        # df = df.apply(lambda x: x.str.strip().str.lower() if x.dtype == "object" else x)
+        for x in ["level", "type", "experiment", "intervention", "Gender"]:
+            df[x]=df[x].str.strip().str.lower()
+        # new_df = df.loc[:, df.dtypes == object].apply(self.label_encoder.fit_transform)
+        # df = df.drop(
+        #     columns=["level", "type", "Gender", "experiment", "intervention"]
+        # )
+        # result = pd.concat(
+        #     [df, new_df],
+        #     axis=1,
+        #     join="outer",
+        #     ignore_index=False,
+        #     keys=None,
+        #     levels=None,
+        #     names=None,
+        #     verify_integrity=False,
+        #     copy=True,
+        # )
+        for x in ["level", "type", "experiment", "intervention", "Gender"]:
+            self.label_encoder[x] = LabelEncoder()
+            self.label_encoder[x]= self.label_encoder[x].fit(df[x])
+            df[x]= self.label_encoder[x].transform(df[x])
+        df.to_csv(self.args.post_preproc_data_path)
 
 
-    def col_correlation(df):
+    def col_correlation(self, df):
         corr = df.corr()
         # print(sns.heatmap(corr))
         # plt.show()
@@ -62,7 +76,7 @@ class Preprocessing:
         return selected_columns
 
 
-    def backwardElimination(x, Y, sl, columns):
+    def backwardElimination(self, x, Y, sl, columns):
         numVars = len(x[0])
         for i in range(0, numVars):
             regressor_OLS = sm.OLS(Y, x).fit()
@@ -77,7 +91,7 @@ class Preprocessing:
         return x, columns
 
 
-    def col_pvalue(df, selected_columns):
+    def col_pvalue(self, df, selected_columns):
         SL = 0.05  # 0.6 < p value for intervention < 0.7
         selected_columns = selected_columns[1:].values
         data_modeled, selected_columns = backwardElimination(
@@ -90,8 +104,9 @@ class Preprocessing:
 
 
 if __name__ == "__main__":
+    preproc = Preprocessing()
+    preproc.clean_dataset()
     df = pd.read_csv(preproc.args.post_preproc_data_path)
-    df.drop(["Unnamed: 0", "Heightin", "Weightlbs", "patient_id"], axis=1, inplace=True)
     selected_column = preproc.col_correlation(df)
     print(df[selected_column].columns)
     data = preproc.col_pvalue(df, selected_column)
