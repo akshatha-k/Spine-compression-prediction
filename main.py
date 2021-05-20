@@ -10,29 +10,24 @@ from args import get_args
 from sklearn.model_selection import train_test_split
 
 
-'''
-
-'''
-def get_values():
-    values = {'Age':66, 'Heightcm':175.26, 'Weightkg':81.65, 'BMI':26.58,'level':'L1L2','Gender':'m'}
+def get_values(args):
+    values = {'Age':args.Age, 'Heightcm':args.Heightcm, 'Weightkg':args.Weightkg, 'BMI':args.BMI,'level':args.level,'Gender':args.Gender}
     return pd.DataFrame(values, index=[0])
 
 def create_dataframe(preproc, scaler):
     unique_vals = preproc.get_unique_values()
     combinations = list(itertools.product(*unique_vals))
     df2 = pd.DataFrame(combinations, columns =['type', 'intervention', 'experiment'])
-    df1 = get_values()
+    df1 = get_values(args)
     df2['tmp']=1
     df1['tmp']=1
     df = pd.merge(df1, df2, on=['tmp'])
     df = df.drop('tmp', axis=1)
     df = df.rename(columns=lambda x: re.sub("[^A-Za-z0-9_]+", "", x))
-    for x in ["level", "type", "experiment", "intervention", "Gender"]:
+    for x in ["level", "Gender", "type", "intervention", "experiment"]:
         df[x]=df[x].str.strip().str.lower()
         df[x]= preproc.label_encoder[x].transform(df[x])
-    df = scaler.transform(df)
-    # print(df)
-    # exit(0)
+    #df = scaler.transform(df)
     return df 
 
 def load_dataset():
@@ -51,28 +46,20 @@ def load_dataset():
 
 if __name__=="__main__":
     args = get_args()
-    # f = open("myfile.txt", "a")
-    # f.write(sys.argv)
-    # f.close()
     #sys.stdout.write("Hola")
     # strlist = {"abc":5, "pqr":10}
-    print(args)
-    '''
     ##Get input from Unity
+    #print(args)
     features, trainset, testset = load_dataset()
     trainer = Trainer(args, features)
     trainer.load()
     df=create_dataframe(trainer.preproc, trainer.scaler)
     y_pred = trainer.predict(df, inference= True)
-    print(y_pred)
-    exit(0)
-    for x in ["level", "type", "experiment", "intervention", "Gender"]:
+    for x in ["level", "type", "intervention", "Gender"]:
         df[x]=trainer.preproc.label_encoder[x].inverse_transform(df[x])
     # df = trainer.preproc.label_encoder.inverse_transform(df)
-    df['values']=y_pred 
-    print(df)
-    exit(0)
     df = df.groupby(["Age","Heightcm","Weightkg","BMI","level", "type", "intervention", "Gender"], sort= True).mean()
     #df.drop("experiment", axis=1, inplace=True)
-    print(df)
-    '''
+    f = open("myfile.txt", "a")
+    f.write(str(df))
+    f.close()

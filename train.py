@@ -38,7 +38,7 @@ class Trainer:
             "decision_tree": DecisionTreeRegressor,
         }
         if preproc is None:
-            preproc= Preprocessing()
+            preproc= Preprocessing(args)
         if scaler is None:
             scaler = StandardScaler()
         self.preproc = preproc
@@ -85,21 +85,21 @@ class Trainer:
 
     def save(self):
         state = {'model':self.model, 'preproc': self.preproc, 'scaler': self.scaler}
-        joblib.dump(state, "models/{}/model".format(self.args.model_name))
+        joblib.dump(state, "{}/{}/model".format(self.args.model_path, self.args.model_name))
         dict_args = vars(self.args)
         json_txt = json.dumps(dict_args, indent=4)
-        with open("models/{}/args".format(self.args.model_name), "w+") as file:
+        with open("{}/{}/args".format(self.args.model_path, self.args.model_name), "w+") as file:
             file.write(json_txt)
 
     def load(self):
-        state= joblib.load("models/{}/model".format(self.args.model_name))
+        state= joblib.load("{}/{}/model".format(self.args.model_path, self.args.model_name))
         self.model = state['model']
         self.preproc = state['preproc']
         self.scaler = state['scaler']
-        with open("models/{}/args".format(self.args.model_name), "r") as file:
+        with open("{}/{}/args".format(self.args.model_path, self.args.model_name), "r") as file:
             self.args = json.load(file)
         try:
-            with open("models/{}/config.json".format(self.args.model_name)) as json_file:
+            with open("{}/{}/config.json".format(self.args.model_path, self.args.model_name)) as json_file:
                 self.model_params = json.load(json_file) 
             #self.model_params = vars(getattr(self.args, self.args.model_name))
         except:
@@ -123,7 +123,7 @@ def load_dataset():
     return features, trainset, testset,scaler
 
 if __name__ == "__main__":
-    preproc = Preprocessing()
+    preproc = Preprocessing(args)
     preproc.clean_dataset()
     features, trainset, testset, scaler = load_dataset()
     trainer = Trainer(args, features, scaler,preproc)

@@ -71,23 +71,23 @@ parser.add_argument(
 #     type=float,
 #     help="Learning rate to use in Gradient Boost",
 # )
-
+parser.add_argument(
+    "--parent_path", default="/home/akshatha/projects/Spine-compression-prediction/", type=str, help="Dataset dir to use"
+)
 parser.add_argument(
     "--dataset_path", default="data/final_data.csv", type=str, help="Dataset dir to use"
 )
 parser.add_argument(
     "--post_preproc_data_path", default="data/no_categorical_data.csv", type=str, help="Dataset dir to use to store the dataset after preprocessing"
 )
-def setup_dir(args):
-    # now = datetime.now()
-    # directory = "models/{}/model".format(args.model_name)
-    # Path(directory).mkdir(parents=True, exist_ok=True)
-    # return directory
-    return "models"
-
+parser.add_argument(
+    "--model_path", default="models", type=str, help="Dataset dir to use"
+)
 
 def get_args():
     # namespace = main_parser.parse_args()
     args = parser.parse_args()
-    args.output_dir = setup_dir(args)
+    args.dataset_path= "{}/{}".format(args.parent_path, args.dataset_path)
+    args.post_preproc_data_path= "{}/{}".format(args.parent_path, args.post_preproc_data_path)
+    args.model_path= "{}/{}".format(args.parent_path, args.model_path)
     return args

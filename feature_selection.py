@@ -17,9 +17,9 @@ import statsmodels.api as sm
 np.random.seed(123)
 
 class Preprocessing:
-    def __init__(self):
+    def __init__(self, args):
         self.label_encoder = {}
-        self.args = get_args()
+        self.args = args
     
     def get_unique_values(self):
         df = pd.read_csv(self.args.dataset_path)
