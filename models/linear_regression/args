@@ -1,6 +1,13 @@
 {
     "model_name": "linear_regression",
-    "dataset_path": "data/final_data.csv",
-    "post_preproc_data_path": "data/no_categorical_data.csv",
-    "output_dir": "models"
+    "Age": 62,
+    "Heightcm": 170,
+    "Weightkg": 72,
+    "BMI": 26,
+    "level": "L1L2",
+    "Gender": "m",
+    "parent_path": ".",
+    "dataset_path": "./data/final_data.csv",
+    "post_preproc_data_path": "./data/no_categorical_data.csv",
+    "model_path": "./models"
 }
