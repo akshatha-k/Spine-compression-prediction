@@ -1,7 +1,4 @@
 import argparse
-
-# import nestargs
-
 from datetime import datetime
 from pathlib import Path
 
@@ -50,32 +47,6 @@ parser.add_argument(
     type=str,
     help="Number of estimators to use in Random Forest",
 )
-# Random Forest params
-# parser.add_argument(
-#     "--rf_n_estimators",
-#     default=10,
-#     type=int,
-#     help="Number of estimators to use in Random Forest",
-# )
-# parser.add_argument(
-#     "--rf_random_state",
-#     default=42,
-#     type=int,
-#     help="Random seed",
-# )
-# #Gradient Boost params
-# parser.add_argument(
-#     "--gb_n_estimators",
-#     default=10,
-#     type=int,
-#     help="Number of estimators to use in Gradient Boost",
-# )
-# parser.add_argument(
-#     "--gb_learning_rate",
-#     default=0.1,
-#     type=float,
-#     help="Learning rate to use in Gradient Boost",
-# )
 parser.add_argument(
     "--parent_path",
     default=".",
@@ -97,7 +68,6 @@ parser.add_argument(
 
 
 def get_args():
-    # namespace = main_parser.parse_args()
     args = parser.parse_args()
     args.dataset_path = "{}/{}".format(args.parent_path, args.dataset_path)
     args.post_preproc_data_path = "{}/{}".format(

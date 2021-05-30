@@ -48,10 +48,9 @@ class Trainer:
     def train(self, trainset, testset):
         try:
             with open(
-                "models/{}/config.json".format(self.args.model_name)
+                "{}/{}/config.json".format(self.args.model_path, self.args.model_name)
             ) as json_file:
                 self.model_params = json.load(json_file)
-            # self.model_params = vars(getattr(self.args, self.args.model_name))
             self.model = self.registry[self.args.model_name](**self.model_params)
         except:
             self.model_params = None
@@ -61,7 +60,6 @@ class Trainer:
     def predict(self, testset, inference=False):
         if inference:
             return self.model.predict(testset)
-            # return self.model.predict(np.expand_dims(testset[0].iloc[0], axis=0))
         return self.model.predict(testset[0])
 
     def metrics(self, testset, y_pred):
@@ -158,8 +156,6 @@ def load_dataset():
     col_names = ["Age", "Heightcm", "Weightkg", "BMI"]
     scaler = get_scaler(x_train, col_names, StandardScaler())
     x_train_scaled = transform_features(x_train, col_names, scaler)
-    # x_train = invert_features(x_train_scaled, col_names, scaler)
-
     y_test = test["value"]
     x_test = test.drop(axis=1, columns=["value"])
     x_test_scaled = transform_features(x_test, col_names, scaler)
@@ -185,5 +181,4 @@ if __name__ == "__main__":
     # # The coefficient of determination: 1 is perfect prediction
     # print("Coefficient of determination: %.2f" % r2score)
     trainer.save()
-
-# print(trainer.predict(testset, inference=True))
+    # print(trainer.predict(testset, inference=True))

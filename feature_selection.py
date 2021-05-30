@@ -51,24 +51,8 @@ class Preprocessing:
         )
         df = df.drop(columns="smoking")
         df = df.rename(columns=lambda x: re.sub("[^A-Za-z0-9_]+", "", x))
-        # df = df.apply(lambda x: x.str.strip().str.lower() if x.dtype == "object" else x)
         for x in ["level", "type", "experiment", "intervention", "Gender"]:
             df[x] = df[x].str.strip().str.lower()
-        # new_df = df.loc[:, df.dtypes == object].apply(self.label_encoder.fit_transform)
-        # df = df.drop(
-        #     columns=["level", "type", "Gender", "experiment", "intervention"]
-        # )
-        # result = pd.concat(
-        #     [df, new_df],
-        #     axis=1,
-        #     join="outer",
-        #     ignore_index=False,
-        #     keys=None,
-        #     levels=None,
-        #     names=None,
-        #     verify_integrity=False,
-        #     copy=True,
-        # )
         for x in ["level", "type", "experiment", "intervention", "Gender"]:
             self.label_encoder[x] = LabelEncoder()
             self.label_encoder[x] = self.label_encoder[x].fit(df[x])
@@ -77,8 +61,6 @@ class Preprocessing:
 
     def col_correlation(self, df):
         corr = df.corr()
-        # print(sns.heatmap(corr))
-        # plt.show()
         columns = np.full((corr.shape[0],), True, dtype=bool)
         for i in range(corr.shape[0]):
             for j in range(i + 1, corr.shape[0]):

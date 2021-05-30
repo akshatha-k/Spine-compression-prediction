@@ -45,6 +45,3 @@ split_df = pd.DataFrame(
 result = pd.concat([split_df, new_df], axis=1)
 result.drop(axis=1, columns=["patient_id_junk"], inplace=True)
 result.to_csv("processed_data.csv", index=False)
-"""
-pid instrumetted ls intervention value					
-"""

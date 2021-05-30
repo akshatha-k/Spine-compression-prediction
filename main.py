@@ -35,7 +35,6 @@ def get_scaler(dataframe, columns, scaler):
 
 
 def transform_features(dataframe, columns, scaler):
-    # scaled_features = dataframe.copy()
     features = dataframe[columns]
     features = scaler.transform(features.values)
     dataframe[columns] = features
@@ -84,10 +83,6 @@ def load_dataset():
 
 if __name__ == "__main__":
     args = get_args()
-    # sys.stdout.write("Hola")
-    # strlist = {"abc":5, "pqr":10}
-    ##Get input from Unity
-    # print(args)
     features, trainset, testset = load_dataset()
     trainer = Trainer(args, features)
     trainer.load()
